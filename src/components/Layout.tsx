@@ -12,12 +12,12 @@ const BackgroundScene = lazy(() => {
   return new Promise((resolve) => {
     import("./BackgroundScene")
       .then(module => {
-        resolve(module);
+        resolve({ default: module.default });
       })
       .catch(error => {
         console.error("Failed to load 3D background:", error);
         // Return the fallback component if the 3D version fails
-        import("./FallbackBackground").then(resolve);
+        import("./FallbackBackground").then(module => resolve({ default: module.default }));
       });
   });
 });
@@ -35,9 +35,9 @@ const Layout = () => {
     <div className="min-h-screen flex flex-col">
       {isHomePage && (
         <Suspense fallback={<FallbackBackground />}>
-          <ErrorBoundary fallback={<FallbackBackground />}>
+          <CustomErrorBoundary fallback={<FallbackBackground />}>
             <BackgroundScene />
-          </ErrorBoundary>
+          </CustomErrorBoundary>
         </Suspense>
       )}
       <Navbar />
@@ -50,18 +50,27 @@ const Layout = () => {
   );
 };
 
-// Simple error boundary component
-class ErrorBoundary extends React.Component {
-  constructor(props) {
+// Simple error boundary component with TypeScript interface
+interface ErrorBoundaryProps {
+  children: React.ReactNode;
+  fallback: React.ReactNode;
+}
+
+interface ErrorBoundaryState {
+  hasError: boolean;
+}
+
+class CustomErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {
+  constructor(props: ErrorBoundaryProps) {
     super(props);
     this.state = { hasError: false };
   }
 
-  static getDerivedStateFromError(error) {
+  static getDerivedStateFromError(error: Error): ErrorBoundaryState {
     return { hasError: true };
   }
 
-  componentDidCatch(error, errorInfo) {
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     console.error("Background error:", error, errorInfo);
   }
 
