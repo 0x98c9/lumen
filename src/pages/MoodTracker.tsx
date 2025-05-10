@@ -1,268 +1,307 @@
-
-import { useState, useEffect } from "react";
-import { format, parseISO, startOfToday, isToday, isThisWeek } from "date-fns";
-import { Button } from "@/components/ui/button";
-import { 
-  saveMoodEntry, 
-  getAllMoodEntries, 
-  generateId, 
-  MoodEntry,
-  Mood
-} from "@/lib/storage";
-import { Textarea } from "@/components/ui/textarea";
-import { useToast } from "@/components/ui/use-toast";
+import { useState } from "react";
 import { Calendar } from "@/components/ui/calendar";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Button } from "@/components/ui/button";
+import { format } from "date-fns";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { ChevronDown, ChevronUp, Info } from "lucide-react";
+import { useToast } from "@/components/ui/use-toast";
+import { getMoodEntries, saveMoodEntry } from "@/lib/storage";
+import { useIsMobile } from "@/hooks/use-mobile";
 
-const moods: Record<Mood, { emoji: string, label: string }> = {
-  angry: { emoji: "😡", label: "Angry" },
-  sad: { emoji: "😢", label: "Sad" },
-  neutral: { emoji: "😐", label: "Neutral" },
-  happy: { emoji: "😊", label: "Happy" },
-  excited: { emoji: "🤩", label: "Excited" }
-};
+// Mood types and their corresponding colors
+const moods = [
+  { name: "Joyful", color: "bg-green-500", textColor: "text-white" },
+  { name: "Happy", color: "bg-green-400", textColor: "text-white" },
+  { name: "Content", color: "bg-green-300", textColor: "text-black" },
+  { name: "Neutral", color: "bg-gray-300", textColor: "text-black" },
+  { name: "Sad", color: "bg-blue-300", textColor: "text-black" },
+  { name: "Anxious", color: "bg-yellow-300", textColor: "text-black" },
+  { name: "Angry", color: "bg-red-400", textColor: "text-white" },
+  { name: "Overwhelmed", color: "bg-purple-400", textColor: "text-white" },
+];
 
-const tags = [
-  "Work", "Health", "Family", "Friends", "Exercise", 
-  "Food", "Sleep", "Social", "Learning", "Relaxation"
+// Activities that might affect mood
+const activities = [
+  { id: "exercise", label: "Exercise" },
+  { id: "meditation", label: "Meditation" },
+  { id: "goodSleep", label: "Good Sleep" },
+  { id: "poorSleep", label: "Poor Sleep" },
+  { id: "socializing", label: "Socializing" },
+  { id: "nature", label: "Time in Nature" },
+  { id: "work", label: "Work Stress" },
+  { id: "reading", label: "Reading" },
 ];
 
 const MoodTracker = () => {
+  const [date, setDate] = useState<Date>(new Date());
+  const [selectedMood, setSelectedMood] = useState<string | null>(null);
+  const [selectedActivities, setSelectedActivities] = useState<string[]>([]);
+  const [notes, setNotes] = useState<string>("");
+  const [isInfoOpen, setIsInfoOpen] = useState(false);
+  const [moodEntries, setMoodEntries] = useState(() => getMoodEntries());
   const { toast } = useToast();
-  const today = startOfToday();
+  const isMobile = useIsMobile();
 
-  const [selectedDate, setSelectedDate] = useState<Date>(today);
-  const [entries, setEntries] = useState<MoodEntry[]>([]);
-  
-  const [currentEntry, setCurrentEntry] = useState<MoodEntry>({
-    id: generateId(),
-    date: format(selectedDate, "yyyy-MM-dd"),
-    mood: "neutral",
-    notes: "",
-    tags: []
-  });
+  // Function to handle activity selection
+  const toggleActivity = (activityId: string) => {
+    setSelectedActivities((prev) =>
+      prev.includes(activityId)
+        ? prev.filter((id) => id !== activityId)
+        : [...prev, activityId]
+    );
+  };
 
-  // Load all entries on component mount
-  useEffect(() => {
-    const loadEntries = () => {
-      const allEntries = getAllMoodEntries();
-      setEntries(allEntries);
-      
-      // Find entry for selected date if it exists
-      const dateStr = format(selectedDate, "yyyy-MM-dd");
-      const existingEntry = allEntries.find(entry => entry.date === dateStr);
-      
-      if (existingEntry) {
-        setCurrentEntry(existingEntry);
-      } else {
-        // Initialize new entry for selected date
-        setCurrentEntry({
-          id: generateId(),
-          date: dateStr,
-          mood: "neutral",
-          notes: "",
-          tags: []
-        });
-      }
+  // Function to save the mood entry
+  const handleSaveMood = () => {
+    if (!selectedMood) {
+      toast({
+        title: "Mood Required",
+        description: "Please select a mood before saving.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const entry = {
+      id: `mood-${Date.now()}`,
+      date: date.toISOString(),
+      mood: selectedMood,
+      activities: selectedActivities,
+      notes,
     };
-    
-    loadEntries();
-  }, [selectedDate]);
 
-  const handleSelectDate = (date: Date | undefined) => {
-    if (date) {
-      setSelectedDate(date);
-    }
-  };
+    // Save to local storage
+    const updatedEntries = saveMoodEntry(entry);
+    setMoodEntries(updatedEntries);
 
-  const handleMoodSelect = (mood: Mood) => {
-    setCurrentEntry({ ...currentEntry, mood });
-  };
+    // Reset form
+    setSelectedMood(null);
+    setSelectedActivities([]);
+    setNotes("");
 
-  const handleTagToggle = (tag: string) => {
-    if (currentEntry.tags?.includes(tag)) {
-      setCurrentEntry({
-        ...currentEntry,
-        tags: currentEntry.tags.filter(t => t !== tag)
-      });
-    } else {
-      setCurrentEntry({
-        ...currentEntry,
-        tags: [...(currentEntry.tags || []), tag]
-      });
-    }
-  };
-
-  const handleSave = () => {
-    saveMoodEntry(currentEntry);
-    
-    // Update local entries list
-    const updatedEntries = entries.filter(e => e.id !== currentEntry.id);
-    updatedEntries.push(currentEntry);
-    setEntries(updatedEntries);
-    
     toast({
-      title: "Mood saved",
-      description: `Your ${moods[currentEntry.mood].label} mood has been recorded.`,
+      title: "Mood Saved",
+      description: `Your mood for ${format(date, "MMMM d, yyyy")} has been saved.`,
     });
   };
 
-  // Generate dots for the calendar
-  const getDayClassNames = (date: Date) => {
-    const dateStr = format(date, "yyyy-MM-dd");
-    const entry = entries.find(entry => entry.date === dateStr);
-    
-    if (!entry) return "";
-    
-    const moodColors: Record<Mood, string> = {
-      angry: "bg-red-500",
-      sad: "bg-blue-500",
-      neutral: "bg-gray-500",
-      happy: "bg-green-500",
-      excited: "bg-purple-500"
-    };
-    
-    return `after:absolute after:bottom-1 after:left-1/2 after:-translate-x-1/2 after:h-1 after:w-1 after:rounded-full ${moodColors[entry.mood]}`;
+  // Function to check if a date has a mood entry
+  const hasMoodEntry = (day: Date) => {
+    const dateStr = format(day, "yyyy-MM-dd");
+    return moodEntries.some((entry) => {
+      const entryDate = new Date(entry.date);
+      return format(entryDate, "yyyy-MM-dd") === dateStr;
+    });
   };
 
-  // Get week summary
-  const weekEntries = entries.filter(entry => {
-    const date = parseISO(entry.date);
-    return isThisWeek(date);
-  });
+  // Function to get the mood for a specific date
+  const getMoodForDate = (day: Date) => {
+    const dateStr = format(day, "yyyy-MM-dd");
+    const entry = moodEntries.find((entry) => {
+      const entryDate = new Date(entry.date);
+      return format(entryDate, "yyyy-MM-dd") === dateStr;
+    });
+    return entry ? entry.mood : null;
+  };
+
+  // Custom day rendering for the calendar
+  const renderDay = (day: Date) => {
+    const mood = getMoodForDate(day);
+    const moodInfo = moods.find((m) => m.name === mood);
+
+    if (!mood) return null;
+
+    return (
+      <div
+        className={`h-2 w-2 rounded-full ${moodInfo?.color || "bg-gray-300"}`}
+      />
+    );
+  };
 
   return (
-    <div className="space-y-6 py-6">
-      <h1 className="text-2xl font-bold">Mood Tracker</h1>
+    <div className="space-y-6">
+      <div className="flex justify-between items-center">
+        <h1 className="text-2xl font-bold">Mood Tracker</h1>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => setIsInfoOpen(!isInfoOpen)}
+        >
+          <Info className="h-4 w-4 mr-1" />
+          <span className="sr-only md:not-sr-only">About Mood Tracking</span>
+        </Button>
+      </div>
 
-      <Tabs defaultValue="today">
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="today">Today's Mood</TabsTrigger>
+      <Collapsible open={isInfoOpen} onOpenChange={setIsInfoOpen}>
+        <CollapsibleContent className="bg-muted/50 p-4 rounded-lg text-sm space-y-2 mb-4">
+          <p>
+            <strong>Why track your mood?</strong> Regular mood tracking can help
+            you identify patterns in your emotional well-being and understand
+            what factors might be influencing how you feel.
+          </p>
+          <p>
+            <strong>How to use:</strong> Select a date, choose your mood, check
+            any relevant activities, add optional notes, and save. Your entries
+            are stored only on your device.
+          </p>
+          <CollapsibleTrigger asChild>
+            <Button variant="ghost" size="sm" className="mt-2">
+              {isInfoOpen ? (
+                <>
+                  <ChevronUp className="h-4 w-4 mr-1" /> Hide Info
+                </>
+              ) : (
+                <>
+                  <ChevronDown className="h-4 w-4 mr-1" /> Show More
+                </>
+              )}
+            </Button>
+          </CollapsibleTrigger>
+        </CollapsibleContent>
+      </Collapsible>
+
+      <Tabs defaultValue="record">
+        <TabsList className="grid grid-cols-2">
+          <TabsTrigger value="record">Record Mood</TabsTrigger>
           <TabsTrigger value="calendar">Calendar View</TabsTrigger>
         </TabsList>
-        
-        <TabsContent value="today" className="space-y-4 pt-4">
-          <div className="text-center mb-6">
-            <p className="text-lg font-medium">
-              {isToday(selectedDate) 
-                ? "How are you feeling today?" 
-                : `Mood for ${format(selectedDate, "MMMM d, yyyy")}`}
-            </p>
-          </div>
-          
-          <div className="grid grid-cols-5 gap-2">
-            {Object.entries(moods).map(([key, { emoji, label }]) => (
-              <button
-                key={key}
-                onClick={() => handleMoodSelect(key as Mood)}
-                className={`p-4 rounded-lg text-center transition-all ${
-                  currentEntry.mood === key 
-                    ? "bg-primary/10 ring-2 ring-primary" 
-                    : "bg-card hover:bg-primary/5"
-                }`}
-              >
-                <span className="text-4xl block mb-2">{emoji}</span>
-                <span className="text-sm">{label}</span>
-              </button>
-            ))}
-          </div>
-          
-          <div className="space-y-2">
-            <label className="text-sm font-medium">Notes (optional)</label>
-            <Textarea
-              placeholder="What influenced your mood today?"
-              value={currentEntry.notes || ""}
-              onChange={(e) => setCurrentEntry({ ...currentEntry, notes: e.target.value })}
-              className="resize-none"
-            />
-          </div>
-          
-          <div className="space-y-2">
-            <label className="text-sm font-medium">Tags (optional)</label>
-            <div className="flex flex-wrap gap-2">
-              {tags.map((tag) => (
-                <button
-                  key={tag}
-                  type="button"
-                  onClick={() => handleTagToggle(tag)}
-                  className={`px-3 py-1 text-sm rounded-full transition-colors ${
-                    currentEntry.tags?.includes(tag)
-                      ? "bg-primary text-primary-foreground"
-                      : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
-                  }`}
-                >
-                  {tag}
-                </button>
-              ))}
-            </div>
-          </div>
-          
-          <Button onClick={handleSave} className="w-full">Save Mood</Button>
-        </TabsContent>
-        
-        <TabsContent value="calendar" className="pt-4">
-          <div className="mx-auto max-w-sm">
-            <Calendar
-              mode="single"
-              selected={selectedDate}
-              onSelect={handleSelectDate}
-              className="rounded-md border"
-              modifiersClassNames={{
-                selected: "bg-primary text-primary-foreground",
-              }}
-              modifiers={{
-                today: today,
-              }}
-              classNames={{
-                day_today: "font-bold border border-primary",
-                day: (date) => getDayClassNames(date),
-              }}
-            />
-          </div>
-          
-          <div className="mt-4">
-            <h3 className="text-lg font-medium mb-2">This Week's Moods</h3>
-            {weekEntries.length === 0 ? (
-              <p className="text-center text-muted-foreground">No mood entries recorded this week</p>
-            ) : (
-              <div className="space-y-2">
-                {weekEntries.map(entry => (
-                  <div 
-                    key={entry.id}
-                    className="flex items-center justify-between p-3 border rounded-lg hover:bg-accent/50 transition-colors cursor-pointer"
-                    onClick={() => setSelectedDate(parseISO(entry.date))}
-                  >
-                    <div className="flex items-center gap-2">
-                      <span className="text-2xl">{moods[entry.mood].emoji}</span>
-                      <div>
-                        <div className="font-medium">{format(parseISO(entry.date), "EEEE")}</div>
-                        <div className="text-xs text-muted-foreground">
-                          {format(parseISO(entry.date), "MMMM d")}
-                        </div>
+
+        <TabsContent value="record" className="space-y-4 pt-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>How are you feeling today?</CardTitle>
+              <CardDescription>
+                Select the date and mood you want to record
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex justify-center mb-4">
+                <Calendar
+                  mode="single"
+                  selected={date}
+                  onSelect={(date) => date && setDate(date)}
+                  className="rounded-md border"
+                  components={{
+                    DayContent: (props) => (
+                      <div className="relative flex h-full w-full items-center justify-center p-0">
+                        <div>{props.day}</div>
+                        {renderDay(props.date)}
                       </div>
-                    </div>
-                    {entry.tags && entry.tags.length > 0 && (
-                      <div className="flex gap-1">
-                        {entry.tags.slice(0, 2).map((tag, i) => (
-                          <span 
-                            key={i}
-                            className="text-xs px-2 py-0.5 rounded-full bg-secondary"
-                          >
-                            {tag}
-                          </span>
-                        ))}
-                        {entry.tags.length > 2 && (
-                          <span className="text-xs px-2 py-0.5 rounded-full bg-secondary">
-                            +{entry.tags.length - 2}
-                          </span>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                ))}
+                    ),
+                  }}
+                />
               </div>
-            )}
-          </div>
+
+              <div>
+                <h3 className="font-medium mb-2">Select your mood:</h3>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+                  {moods.map((mood) => (
+                    <button
+                      key={mood.name}
+                      className={`${mood.color} ${
+                        mood.textColor
+                      } p-3 rounded-md text-center transition-all ${
+                        selectedMood === mood.name
+                          ? "ring-2 ring-primary ring-offset-2"
+                          : ""
+                      }`}
+                      onClick={() => setSelectedMood(mood.name)}
+                    >
+                      {mood.name}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <h3 className="font-medium mb-2">Activities today:</h3>
+                <div className="grid grid-cols-2 gap-2">
+                  {activities.map((activity) => (
+                    <div
+                      key={activity.id}
+                      className="flex items-center space-x-2"
+                    >
+                      <Checkbox
+                        id={activity.id}
+                        checked={selectedActivities.includes(activity.id)}
+                        onCheckedChange={() => toggleActivity(activity.id)}
+                      />
+                      <label
+                        htmlFor={activity.id}
+                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                      >
+                        {activity.label}
+                      </label>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <h3 className="font-medium mb-2">Notes (optional):</h3>
+                <textarea
+                  className="w-full min-h-[100px] p-2 border rounded-md"
+                  placeholder="Add any additional thoughts about your day..."
+                  value={notes}
+                  onChange={(e) => setNotes(e.target.value)}
+                />
+              </div>
+            </CardContent>
+            <CardFooter>
+              <Button onClick={handleSaveMood} className="w-full">
+                Save Mood Entry
+              </Button>
+            </CardFooter>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="calendar" className="pt-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Your Mood Calendar</CardTitle>
+              <CardDescription>
+                View your mood patterns over time
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex justify-center">
+                <Calendar
+                  mode="single"
+                  selected={date}
+                  onSelect={(date) => date && setDate(date)}
+                  className="rounded-md border"
+                  components={{
+                    DayContent: (props) => (
+                      <div className="relative flex h-full w-full items-center justify-center p-0">
+                        <div>{props.day}</div>
+                        {renderDay(props.date)}
+                      </div>
+                    ),
+                  }}
+                />
+              </div>
+
+              <div className="mt-4">
+                <h3 className="font-medium mb-2">Mood Legend:</h3>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+                  {moods.map((mood) => (
+                    <div
+                      key={mood.name}
+                      className="flex items-center space-x-2"
+                    >
+                      <div
+                        className={`h-3 w-3 rounded-full ${mood.color}`}
+                      ></div>
+                      <span className="text-sm">{mood.name}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </TabsContent>
       </Tabs>
     </div>
