@@ -1,10 +1,12 @@
 
 import { Outlet } from "react-router-dom";
 import { Navbar } from "./Navbar";
-import { useEffect } from "react";
+import { useEffect, Suspense, lazy } from "react";
 import { setupLocalStorage } from "@/lib/storage";
 import { useLocation } from "react-router-dom";
-import BackgroundScene from "./BackgroundScene";
+
+// Lazy-load the BackgroundScene component to handle potential import errors gracefully
+const BackgroundScene = lazy(() => import("./BackgroundScene"));
 
 const Layout = () => {
   const location = useLocation();
@@ -17,7 +19,11 @@ const Layout = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
-      {isHomePage && <BackgroundScene />}
+      {isHomePage && (
+        <Suspense fallback={<div className="fixed inset-0 -z-10 bg-gradient-to-br from-accent/30 to-background"></div>}>
+          <BackgroundScene />
+        </Suspense>
+      )}
       <Navbar />
       <main className="flex-1 relative z-10">
         <div className={isHomePage ? "" : "journal-container"}>

@@ -1,10 +1,17 @@
 
 import { useRef } from "react";
+import * as THREE from "three";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Sphere, Box, useTexture, Environment } from "@react-three/drei";
-import * as THREE from "three";
 
-const ShapeParticle = ({ position, rotation, size, color }) => {
+interface ShapeParticleProps {
+  position: [number, number, number];
+  rotation: [number, number, number];
+  size: number;
+  color: string;
+}
+
+const ShapeParticle = ({ position, rotation, size, color }: ShapeParticleProps) => {
   const mesh = useRef<THREE.Mesh>(null!);
   
   useFrame((state) => {
@@ -31,7 +38,11 @@ const ShapeParticle = ({ position, rotation, size, color }) => {
   );
 };
 
-const Particles = ({ count = 15 }) => {
+interface ParticlesProps {
+  count?: number;
+}
+
+const Particles = ({ count = 15 }: ParticlesProps) => {
   const particles = Array.from({ length: count }).map((_, i) => {
     const posRange = 12;
     return {
@@ -39,8 +50,8 @@ const Particles = ({ count = 15 }) => {
         (Math.random() - 0.5) * posRange,
         (Math.random() - 0.5) * posRange, 
         (Math.random() - 0.5) * posRange - 5
-      ],
-      rotation: [Math.random(), Math.random(), Math.random()],
+      ] as [number, number, number],
+      rotation: [Math.random(), Math.random(), Math.random()] as [number, number, number],
       size: Math.random() * 0.5 + 0.1,
       color: ['#9b87f5', '#D6BCFA', '#E5DEFF', '#7E69AB'][Math.floor(Math.random() * 4)]
     };
