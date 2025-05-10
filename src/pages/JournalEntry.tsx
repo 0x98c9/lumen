@@ -4,7 +4,6 @@ import { useNavigate, useParams } from "react-router-dom";
 import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { 
   getJournalEntryById, 
   saveJournalEntry, 
@@ -13,6 +12,7 @@ import {
 } from "@/lib/storage";
 import { useToast } from "@/components/ui/use-toast";
 import { ArrowLeft } from "lucide-react";
+import RichTextEditor from "@/components/RichTextEditor";
 
 const JournalEntry = () => {
   const { id } = useParams();
@@ -83,6 +83,10 @@ const JournalEntry = () => {
     });
   };
 
+  const handleContentChange = (content: string) => {
+    setEntry({ ...entry, content });
+  };
+
   return (
     <div className="space-y-6 py-6">
       <div className="flex items-center gap-4">
@@ -103,14 +107,11 @@ const JournalEntry = () => {
           className="text-xl font-medium"
         />
         
-        <div className="border rounded-md">
-          <Textarea
-            placeholder="Write your thoughts here..."
-            value={entry.content}
-            onChange={(e) => setEntry({ ...entry, content: e.target.value })}
-            className="journal-textarea min-h-[300px]"
-          />
-        </div>
+        <RichTextEditor 
+          content={entry.content} 
+          onChange={handleContentChange}
+          className="journal-textarea"
+        />
         
         <div className="space-y-2">
           <div className="flex items-center gap-2">
