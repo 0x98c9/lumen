@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Calendar } from "@/components/ui/calendar";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,7 +9,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { ChevronDown, ChevronUp, Info } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
-import { getMoodEntries, saveMoodEntry } from "@/lib/storage";
+import { getAllMoodEntries, saveMoodEntry, generateId, Mood, MoodEntry } from "@/lib/storage";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 // Mood types and their corresponding colors
@@ -37,11 +38,11 @@ const activities = [
 
 const MoodTracker = () => {
   const [date, setDate] = useState<Date>(new Date());
-  const [selectedMood, setSelectedMood] = useState<string | null>(null);
+  const [selectedMood, setSelectedMood] = useState<Mood | null>(null);
   const [selectedActivities, setSelectedActivities] = useState<string[]>([]);
   const [notes, setNotes] = useState<string>("");
   const [isInfoOpen, setIsInfoOpen] = useState(false);
-  const [moodEntries, setMoodEntries] = useState(() => getMoodEntries());
+  const [moodEntries, setMoodEntries] = useState<MoodEntry[]>(() => getAllMoodEntries());
   const { toast } = useToast();
   const isMobile = useIsMobile();
 
@@ -65,17 +66,18 @@ const MoodTracker = () => {
       return;
     }
 
-    const entry = {
-      id: `mood-${Date.now()}`,
-      date: date.toISOString(),
+    const entry: MoodEntry = {
+      id: generateId(),
+      date: format(date, 'yyyy-MM-dd'),
       mood: selectedMood,
-      activities: selectedActivities,
-      notes,
+      notes: notes || undefined,
+      tags: selectedActivities.length > 0 ? selectedActivities : undefined
     };
 
     // Save to local storage
-    const updatedEntries = saveMoodEntry(entry);
-    setMoodEntries(updatedEntries);
+    saveMoodEntry(entry);
+    // Update local state
+    setMoodEntries(getAllMoodEntries());
 
     // Reset form
     setSelectedMood(null);
@@ -91,26 +93,20 @@ const MoodTracker = () => {
   // Function to check if a date has a mood entry
   const hasMoodEntry = (day: Date) => {
     const dateStr = format(day, "yyyy-MM-dd");
-    return moodEntries.some((entry) => {
-      const entryDate = new Date(entry.date);
-      return format(entryDate, "yyyy-MM-dd") === dateStr;
-    });
+    return moodEntries.some((entry) => entry.date === dateStr);
   };
 
   // Function to get the mood for a specific date
   const getMoodForDate = (day: Date) => {
     const dateStr = format(day, "yyyy-MM-dd");
-    const entry = moodEntries.find((entry) => {
-      const entryDate = new Date(entry.date);
-      return format(entryDate, "yyyy-MM-dd") === dateStr;
-    });
+    const entry = moodEntries.find((entry) => entry.date === dateStr);
     return entry ? entry.mood : null;
   };
 
   // Custom day rendering for the calendar
   const renderDay = (day: Date) => {
     const mood = getMoodForDate(day);
-    const moodInfo = moods.find((m) => m.name === mood);
+    const moodInfo = moods.find((m) => m.name.toLowerCase() === mood);
 
     if (!mood) return null;
 
@@ -185,10 +181,10 @@ const MoodTracker = () => {
                   onSelect={(date) => date && setDate(date)}
                   className="rounded-md border"
                   components={{
-                    DayContent: (props) => (
+                    DayContent: ({ date, ...props }) => (
                       <div className="relative flex h-full w-full items-center justify-center p-0">
-                        <div>{props.day}</div>
-                        {renderDay(props.date)}
+                        <div>{date?.getDate()}</div>
+                        {renderDay(date as Date)}
                       </div>
                     ),
                   }}
@@ -204,11 +200,11 @@ const MoodTracker = () => {
                       className={`${mood.color} ${
                         mood.textColor
                       } p-3 rounded-md text-center transition-all ${
-                        selectedMood === mood.name
+                        selectedMood === mood.name.toLowerCase()
                           ? "ring-2 ring-primary ring-offset-2"
                           : ""
                       }`}
-                      onClick={() => setSelectedMood(mood.name)}
+                      onClick={() => setSelectedMood(mood.name.toLowerCase() as Mood)}
                     >
                       {mood.name}
                     </button>
@@ -274,10 +270,10 @@ const MoodTracker = () => {
                   onSelect={(date) => date && setDate(date)}
                   className="rounded-md border"
                   components={{
-                    DayContent: (props) => (
+                    DayContent: ({ date, ...props }) => (
                       <div className="relative flex h-full w-full items-center justify-center p-0">
-                        <div>{props.day}</div>
-                        {renderDay(props.date)}
+                        <div>{date?.getDate()}</div>
+                        {renderDay(date as Date)}
                       </div>
                     ),
                   }}

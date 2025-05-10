@@ -1,7 +1,7 @@
 
 import { format } from "date-fns";
 
-export type Mood = "angry" | "sad" | "neutral" | "happy" | "excited";
+export type Mood = "angry" | "sad" | "neutral" | "happy" | "excited" | "joyful" | "content" | "anxious" | "overwhelmed";
 
 export type MoodEntry = {
   id: string;
