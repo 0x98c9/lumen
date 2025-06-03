@@ -129,6 +129,36 @@
   .gradient-text {
     @apply bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent-foreground;
   }
+  
+  .hero-gradient {
+    @apply bg-gradient-to-br from-primary/5 via-background to-accent/5;
+  }
+  
+  .card-highlight {
+    @apply relative overflow-hidden;
+  }
+  
+  .card-highlight::after {
+    content: "";
+    @apply absolute -top-[150%] -right-[150%] w-[200%] h-[200%] opacity-0 bg-gradient-to-br from-primary/20 via-accent/10 to-transparent rounded-full transition-all duration-700 ease-out;
+  }
+  
+  .card-highlight:hover::after {
+    @apply opacity-100 -top-[100%] -right-[100%];
+  }
+  
+  .pulse-slow {
+    animation: pulse-slow 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+  
+  @keyframes pulse-slow {
+    0%, 100% {
+      opacity: 0.5;
+    }
+    50% {
+      opacity: 0.9;
+    }
+  }
 }
 
 @layer utilities {
@@ -139,5 +169,12 @@
   
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
+  }
+  
+  .bg-grid-pattern {
+    background-image: 
+      linear-gradient(to right, rgba(var(--primary), 0.1) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(var(--primary), 0.1) 1px, transparent 1px);
+    background-size: 20px 20px;
   }
 }

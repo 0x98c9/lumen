@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -60,7 +59,7 @@ const Journal = () => {
             <div key={entry.id} className="entry-card">
               <div className="flex justify-between items-start">
                 <div>
-                  <h3 className="font-medium">{entry.title || "Untitled Entry"}</h3>
+                  <h2 className="text-xl font-bold">{entry.title || "Untitled Entry"}</h2>
                   <p className="text-sm text-muted-foreground">
                     {format(parseISO(entry.date), "EEEE, MMMM d, yyyy")}
                   </p>
@@ -83,9 +82,7 @@ const Journal = () => {
                 </div>
               </div>
               <div className="mt-2">
-                <p className="text-muted-foreground line-clamp-2">
-                  {entry.content}
-                </p>
+                <div className="text-muted-foreground text-sm line-clamp-2 prose prose-sm max-w-none" dangerouslySetInnerHTML={{ __html: entry.content }} />
               </div>
               {entry.tags && entry.tags.length > 0 && (
                 <div className="mt-2 flex flex-wrap gap-1">

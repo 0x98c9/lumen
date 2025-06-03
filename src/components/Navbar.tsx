@@ -6,8 +6,8 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 export function Navbar() {
-  const location = useLocation();
   const { theme, setTheme } = useTheme();
+  const location = useLocation();
   
   const navigation = [
     { name: "Journal", href: "/journal", icon: BookOpen },
@@ -19,10 +19,30 @@ export function Navbar() {
     <header className="border-b">
       <div className="journal-container flex items-center justify-between py-4">
         <Link to="/" className="flex items-center space-x-2">
-          <span className="font-semibold text-xl">Shadow Self Journal</span>
+          <span className="font-semibold text-xl">Lumen</span>
         </Link>
         
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-6">
+          {/* Navigation Links */}
+          <nav className="hidden md:flex items-center gap-6">
+            {navigation.map((item) => (
+              <Link
+                key={item.name}
+                to={item.href}
+                className={cn(
+                  "flex items-center gap-1.5 text-sm font-medium transition-colors",
+                  location.pathname.startsWith(item.href)
+                    ? "text-primary"
+                    : "text-muted-foreground hover:text-foreground"
+                )}
+              >
+                <item.icon className="h-4 w-4" />
+                <span>{item.name}</span>
+              </Link>
+            ))}
+          </nav>
+          
+          {/* Theme Toggle */}
           <Button
             variant="ghost"
             size="icon"
@@ -38,7 +58,8 @@ export function Navbar() {
         </div>
       </div>
       
-      <nav className="border-t">
+      {/* Mobile Navigation */}
+      <nav className="border-t md:hidden">
         <div className="journal-container">
           <div className="flex justify-between items-center">
             {navigation.map((item) => (

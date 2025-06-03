@@ -1,73 +1,88 @@
-# Welcome to your Lovable project
+# Lumen – Shadow Self Journal
 
-## Project info
+Lumen is a privacy-first journaling and mood tracking web app designed to help you reflect, grow, and improve your emotional well-being. All your data stays on your device—no accounts, no cloud storage, no tracking. Lumen is free, beautiful, and simple to use.
 
-**URL**: https://lovable.dev/projects/b2bc0979-6081-4de4-ba56-62183063fec2
+## ✨ Features
 
-## How can I edit this code?
+- **Journaling**: Write daily entries in a distraction-free, rich text editor. Organize your thoughts with tags and search through your reflections easily.
+- **Mood Tracking**: Record your mood each day, add notes, and visualize patterns over time to better understand your emotional journey.
+- **Self-Discovery**: Gain insights from your journal and mood data to foster personal growth and self-awareness.
+- **Complete Privacy**: All data is stored locally in your browser. No data ever leaves your device.
+- **No Accounts Required**: Use Lumen instantly—no sign-up, no login, no cloud.
+- **Modern UI**: Enjoy a beautiful, responsive, and accessible interface with smooth animations and thoughtful design.
 
-There are several ways of editing your application.
+## 🛡️ Privacy Promise
 
-**Use Lovable**
+Lumen is built with privacy at its core. Everything you write stays private—only on your device. There are no accounts, no cloud storage, and no tracking. Your thoughts and feelings are yours alone.
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/b2bc0979-6081-4de4-ba56-62183063fec2) and start prompting.
+## 🚀 Getting Started
 
-Changes made via Lovable will be committed automatically to this repo.
+### Prerequisites
+- [Node.js](https://nodejs.org/) (v18 or newer recommended)
+- [Bun](https://bun.sh/) (if you prefer Bun over npm/yarn)
 
-**Use your preferred IDE**
+### Installation
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+1. **Clone the repository:**
+   ```sh
+   git clone https://github.com/0x98c9/lumen.git
+   cd shadow-self-journal
+   ```
+2. **Install dependencies:**
+   ```sh
+   npm install
+   # or
+   bun install
+   ```
+3. **Start the development server:**
+   ```sh
+   npm run dev
+   # or
+   bun run dev
+   ```
+4. **Open in your browser:**
+   Visit [http://localhost:5173](http://localhost:5173) (or the port shown in your terminal).
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+## 🖥️ Project Structure
 
-Follow these steps:
+- `src/pages/` – Main pages (Index, Journal, MoodTracker, Stats, etc.)
+- `src/components/` – UI components (Button, Card, MotionSection, etc.)
+- `src/lib/` – Utility and storage logic
+- `public/` – Static assets
 
+## 🧩 Tech Stack
+- **React** (with Vite)
+- **TypeScript**
+- **Framer Motion** (animations)
+- **Tailwind CSS** (styling)
+- **Lucide Icons** (iconography)
+
+## 📝 Usage
+- **Start Writing**: Click "Start Writing" to create a new journal entry.
+- **Track Mood**: Click "Track Mood" to log your current emotional state.
+- **View Insights**: Explore the "Stats" page for patterns and self-discovery.
+- **Privacy**: All data is stored in your browser's local storage. Clearing your browser data will erase your journal and mood history.
+
+## 💡 Who Is This For?
+- Self-growth enthusiasts
+- Privacy-conscious users
+- Mental wellness seekers
+- Anyone looking to improve self-awareness and emotional intelligence
+
+## 📦 Building for Production
 ```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+npm run build
+# or
+bun run build
 ```
+The output will be in the `dist/` folder. Deploy to any static hosting provider (Vercel, Netlify, GitHub Pages, etc).
 
-**Edit a file directly in GitHub**
+## 🤝 Contributing
+Pull requests and suggestions are welcome! Please open an issue or submit a PR for improvements or bug fixes.
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## 📄 License
+MIT License. See [LICENSE](LICENSE) for details.
 
-**Use GitHub Codespaces**
+---
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/b2bc0979-6081-4de4-ba56-62183063fec2) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+**Lumen** – Your private space for reflection and emotional well-being.

@@ -1,11 +1,6 @@
-
-import { useEditor, EditorContent } from '@tiptap/react';
-import StarterKit from '@tiptap/starter-kit';
-import { Button } from './ui/button';
-import { 
-  Bold, Italic, List, ListOrdered, 
-  Heading1, Heading2, Quote, Undo, Redo 
-} from 'lucide-react';
+import React, { useEffect, useRef } from 'react';
+import Quill from 'quill';
+import 'quill/dist/quill.snow.css';
 
 interface RichTextEditorProps {
   content: string;
@@ -14,121 +9,61 @@ interface RichTextEditorProps {
 }
 
 const RichTextEditor = ({ content, onChange, className }: RichTextEditorProps) => {
-  const editor = useEditor({
-    extensions: [
-      StarterKit,
-    ],
-    content,
-    onUpdate: ({ editor }) => {
-      onChange(editor.getHTML());
-    },
-  });
+  const editorRef = useRef<HTMLDivElement>(null);
+  const quillRef = useRef<Quill | null>(null);
 
-  if (!editor) {
-    return null;
-  }
+  useEffect(() => {
+    if (editorRef.current && !quillRef.current) {
+      quillRef.current = new Quill(editorRef.current, {
+        theme: 'snow',
+        modules: {
+          toolbar: [
+            [{ header: [1, 2, false] }],
+            ['bold', 'italic', 'underline', 'strike'],
+            [{ list: 'ordered' }, { list: 'bullet' }],
+            ['clean'],
+            ['undo', 'redo'], // Custom, will be handled below
+          ],
+          history: {
+            delay: 1000,
+            maxStack: 100,
+            userOnly: true,
+          },
+        }
+      });
+      quillRef.current.on('text-change', () => {
+        onChange(quillRef.current!.root.innerHTML);
+      });
+      // Set initial content
+      quillRef.current.root.innerHTML = content;
+    }
+    // Update content if prop changes
+    if (quillRef.current && quillRef.current.root.innerHTML !== content) {
+      quillRef.current.root.innerHTML = content;
+    }
+  }, [content, onChange]);
+
+  // Add undo/redo handlers
+  useEffect(() => {
+    if (!quillRef.current) return;
+    const quill = quillRef.current;
+    // Quill's toolbar module type is not known, so we cast it
+    const toolbar = quill.getModule('toolbar') as any;
+    if (toolbar && typeof toolbar.addHandler === 'function') {
+      toolbar.addHandler('undo', () => {
+        quill.history.undo();
+      });
+      toolbar.addHandler('redo', () => {
+        quill.history.redo();
+      });
+    }
+  }, []);
 
   return (
     <div className={`border rounded-md flex flex-col ${className}`}>
-      <div className="flex flex-wrap gap-1 p-1 border-b bg-muted/40">
-        <Button
-          type="button"
-          variant="ghost"
-          size="sm"
-          onClick={() => editor.chain().focus().toggleBold().run()}
-          className={`h-8 px-2 ${editor.isActive('bold') ? 'bg-muted' : ''}`}
-        >
-          <Bold className="h-4 w-4" />
-        </Button>
-        
-        <Button
-          type="button"
-          variant="ghost"
-          size="sm"
-          onClick={() => editor.chain().focus().toggleItalic().run()}
-          className={`h-8 px-2 ${editor.isActive('italic') ? 'bg-muted' : ''}`}
-        >
-          <Italic className="h-4 w-4" />
-        </Button>
-        
-        <Button
-          type="button"
-          variant="ghost"
-          size="sm"
-          onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
-          className={`h-8 px-2 ${editor.isActive('heading', { level: 1 }) ? 'bg-muted' : ''}`}
-        >
-          <Heading1 className="h-4 w-4" />
-        </Button>
-        
-        <Button
-          type="button"
-          variant="ghost"
-          size="sm"
-          onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-          className={`h-8 px-2 ${editor.isActive('heading', { level: 2 }) ? 'bg-muted' : ''}`}
-        >
-          <Heading2 className="h-4 w-4" />
-        </Button>
-        
-        <Button
-          type="button"
-          variant="ghost"
-          size="sm"
-          onClick={() => editor.chain().focus().toggleBulletList().run()}
-          className={`h-8 px-2 ${editor.isActive('bulletList') ? 'bg-muted' : ''}`}
-        >
-          <List className="h-4 w-4" />
-        </Button>
-        
-        <Button
-          type="button"
-          variant="ghost"
-          size="sm"
-          onClick={() => editor.chain().focus().toggleOrderedList().run()}
-          className={`h-8 px-2 ${editor.isActive('orderedList') ? 'bg-muted' : ''}`}
-        >
-          <ListOrdered className="h-4 w-4" />
-        </Button>
-        
-        <Button
-          type="button"
-          variant="ghost"
-          size="sm"
-          onClick={() => editor.chain().focus().toggleBlockquote().run()}
-          className={`h-8 px-2 ${editor.isActive('blockquote') ? 'bg-muted' : ''}`}
-        >
-          <Quote className="h-4 w-4" />
-        </Button>
-        
-        <div className="ml-auto flex gap-1">
-          <Button
-            type="button"
-            variant="ghost"
-            size="sm"
-            onClick={() => editor.chain().focus().undo().run()}
-            disabled={!editor.can().undo()}
-            className="h-8 px-2"
-          >
-            <Undo className="h-4 w-4" />
-          </Button>
-          
-          <Button
-            type="button"
-            variant="ghost"
-            size="sm"
-            onClick={() => editor.chain().focus().redo().run()}
-            disabled={!editor.can().redo()}
-            className="h-8 px-2"
-          >
-            <Redo className="h-4 w-4" />
-          </Button>
-        </div>
-      </div>
-      
-      <EditorContent 
-        editor={editor} 
-        className="p-3 min-h-[250px] prose prose-sm max-w-none focus:outline-none" 
+      <div
+        ref={editorRef}
+        style={{ minHeight: 250, background: 'white', fontFamily: 'inherit', fontSize: '1rem' }}
       />
     </div>
   );
