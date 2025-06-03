@@ -103,15 +103,15 @@
 
 @layer components {
   .journal-container {
-    @apply max-w-3xl mx-auto px-4 py-6;
+    @apply max-w-3xl mx-auto px-4 sm:px-6 py-4 sm:py-6;
   }
   
   .journal-textarea {
-    @apply w-full min-h-[200px] resize-none bg-transparent p-4 focus:outline-none text-foreground placeholder:text-muted-foreground;
+    @apply w-full min-h-[200px] resize-none bg-transparent p-2 sm:p-4 focus:outline-none text-foreground placeholder:text-muted-foreground;
   }
   
   .entry-card {
-    @apply border rounded-lg p-4 mb-4 bg-card hover:shadow-sm transition-all;
+    @apply border rounded-lg p-3 sm:p-4 mb-4 bg-card hover:shadow-sm transition-all;
   }
 
   .fade-in {
@@ -131,7 +131,10 @@
   }
   
   .hero-gradient {
-    @apply bg-gradient-to-br from-primary/5 via-background to-accent/5;
+    @apply bg-gradient-to-br from-primary/10 via-background to-accent/10;
+    background-image: radial-gradient(circle at 20% 30%, rgba(var(--primary), 0.15) 0%, transparent 30%),
+                      radial-gradient(circle at 80% 70%, rgba(var(--accent), 0.15) 0%, transparent 30%),
+                      linear-gradient(to bottom right, rgba(var(--primary), 0.05), rgba(var(--background), 1), rgba(var(--accent), 0.05));
   }
   
   .card-highlight {
@@ -148,15 +151,22 @@
   }
   
   .pulse-slow {
-    animation: pulse-slow 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    animation: pulse-slow 6s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    filter: blur(8px);
   }
   
   @keyframes pulse-slow {
-    0%, 100% {
-      opacity: 0.5;
+    0% {
+      opacity: 0.3;
+      transform: scale(0.95);
     }
     50% {
-      opacity: 0.9;
+      opacity: 0.7;
+      transform: scale(1.05);
+    }
+    100% {
+      opacity: 0.3;
+      transform: scale(0.95);
     }
   }
 }
@@ -173,8 +183,35 @@
   
   .bg-grid-pattern {
     background-image: 
-      linear-gradient(to right, rgba(var(--primary), 0.1) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(var(--primary), 0.1) 1px, transparent 1px);
+      linear-gradient(to right, rgba(var(--primary), 0.05) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(var(--primary), 0.05) 1px, transparent 1px);
     background-size: 20px 20px;
+  }
+  
+  .text-glow {
+    text-shadow: 0 0 10px rgba(var(--primary), 0.3),
+                 0 0 20px rgba(var(--primary), 0.2),
+                 0 0 30px rgba(var(--primary), 0.1);
+  }
+  
+  .hero-title-gradient {
+    background: linear-gradient(
+      to right,
+      hsl(var(--primary)),
+      hsl(var(--accent)),
+      hsl(var(--accent-foreground)),
+      hsl(var(--primary))
+    );
+    background-size: 200% auto;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: shine 8s linear infinite;
+  }
+  
+  @keyframes shine {
+    to {
+      background-position: 200% center;
+    }
   }
 }

@@ -25,95 +25,205 @@ const Index = () => {
     <div className="space-y-12 py-6 overflow-hidden">
       {/* Hero Section */}
       <MotionSection>
-        <section className="py-16 md:py-24 text-center relative hero-gradient">
-          {/* Background pattern */}
+        <section className="min-h-[85vh] flex items-center justify-center py-10 sm:py-16 md:py-24 text-center relative overflow-hidden">
+          {/* Enhanced background with multiple layers */}
+          <div className="absolute inset-0 hero-gradient"></div>
           <div className="absolute inset-0 bg-grid-pattern opacity-5 pointer-events-none"></div>
           <div className="absolute inset-0 bg-gradient-to-b from-background via-transparent to-background pointer-events-none"></div>
           
-          {/* Floating elements */}
+          {/* Animated floating elements */}
           <motion.div 
-            className="absolute top-20 left-[15%] h-12 w-12 rounded-full bg-primary/20 backdrop-blur-md pulse-slow"
+            className="absolute top-[10%] left-[10%] h-16 w-16 sm:h-24 sm:w-24 rounded-full bg-primary/10 backdrop-blur-sm pulse-slow"
             animate={{ 
-              y: [0, 15, 0],
-              opacity: [0.7, 0.9, 0.7]
+              y: [0, 20, 0],
+              x: [0, 10, 0],
+              opacity: [0.5, 0.7, 0.5]
             }}
             transition={{ 
               repeat: Infinity, 
-              duration: 5,
+              duration: 8,
               ease: "easeInOut"
             }}
           />
           <motion.div 
-            className="absolute bottom-20 right-[20%] h-16 w-16 rounded-full bg-accent/20 backdrop-blur-md pulse-slow"
+            className="absolute top-[30%] right-[15%] h-20 w-20 sm:h-32 sm:w-32 rounded-full bg-accent/10 backdrop-blur-sm pulse-slow"
             animate={{ 
-              y: [0, -20, 0],
-              opacity: [0.5, 0.8, 0.5]
+              y: [0, -30, 0],
+              x: [0, -15, 0],
+              opacity: [0.4, 0.6, 0.4]
             }}
             transition={{ 
               repeat: Infinity, 
-              duration: 7,
+              duration: 10,
+              ease: "easeInOut"
+            }}
+          />
+          <motion.div 
+            className="absolute bottom-[20%] left-[20%] h-24 w-24 sm:h-40 sm:w-40 rounded-full bg-primary/5 backdrop-blur-sm pulse-slow"
+            animate={{ 
+              y: [0, 15, 0],
+              x: [0, -10, 0],
+              opacity: [0.3, 0.5, 0.3]
+            }}
+            transition={{ 
+              repeat: Infinity, 
+              duration: 12,
+              ease: "easeInOut"
+            }}
+          />
+          <motion.div 
+            className="absolute bottom-[10%] right-[10%] h-16 w-16 sm:h-28 sm:w-28 rounded-full bg-accent/5 backdrop-blur-sm pulse-slow"
+            animate={{ 
+              y: [0, -20, 0],
+              x: [0, 10, 0],
+              opacity: [0.2, 0.4, 0.2]
+            }}
+            transition={{ 
+              repeat: Infinity, 
+              duration: 9,
               ease: "easeInOut"
             }}
           />
           
+          {/* Content */}
           <div className="container px-4 md:px-6 relative z-10">
-            <div className="flex flex-col items-center space-y-10 text-center">
+            <div className="flex flex-col items-center space-y-6 sm:space-y-8 md:space-y-10 text-center">
               <motion.div 
-                className="space-y-6"
+                className="space-y-4 sm:space-y-6"
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ type: "spring", stiffness: 50, damping: 20 }}
               >
-                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 backdrop-blur-sm border border-primary/20 mb-4">
-                  <Sparkles className="h-4 w-4 text-primary" />
-                  <span className="text-sm font-medium">Your personal reflection space</span>
+                <div className="inline-flex items-center gap-1.5 sm:gap-2 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-primary/10 backdrop-blur-sm border border-primary/20 mb-2 sm:mb-4 shadow-sm">
+                  <Sparkles className="h-3 w-3 sm:h-4 sm:w-4 text-primary" />
+                  <span className="text-xs sm:text-sm font-medium">Your personal reflection space</span>
                 </div>
                 
-                <h1 className="text-5xl font-bold tracking-tighter sm:text-6xl text-white md:text-7xl bg-clip-text text-transparent bg-gradient-to-r from-primary via-accent to-accent-foreground">Lumen</h1>
-                <p className="mx-auto max-w-[700px] text-muted-foreground md:text-xl lg:text-2xl">
+                <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tighter hero-title-gradient">
+                  <motion.span
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.1, duration: 0.6 }}
+                    className="inline-block"
+                  >
+                    Lumen
+                  </motion.span>
+                </h1>
+                <p className="mx-auto max-w-[700px] text-sm sm:text-base md:text-xl lg:text-2xl text-muted-foreground">
                   Your private space for reflection and emotional well-being, with no accounts or cloud storage.
                 </p>
               </motion.div>
               
               <motion.div 
-                className="flex flex-col sm:flex-row gap-4 sm:space-x-4"
+                className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full max-w-xs sm:max-w-none sm:w-auto"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 }}
               >
-                <Button asChild size="lg" className="bg-gradient-to-r from-primary to-accent-foreground hover:opacity-90 transition-all shadow-lg hover:shadow-xl text-base px-6">
+                <Button asChild size="lg" className="bg-gradient-to-r from-primary to-accent-foreground hover:opacity-90 transition-all shadow-lg hover:shadow-xl text-sm sm:text-base px-4 sm:px-6 py-2 h-auto sm:h-12">
                   <Link to="/journal/new" className="flex items-center gap-2">
                     Start Writing
-                    <ArrowRight className="h-4 w-4 ml-1" />
+                    <ArrowRight className="h-3.5 w-3.5 sm:h-4 sm:w-4 ml-1" />
                   </Link>
                 </Button>
-                <Button asChild variant="outline" size="lg" className="backdrop-blur-sm bg-background/80 border border-border/50 shadow-md hover:shadow-lg text-base px-6">
+                <Button asChild variant="outline" size="lg" className="backdrop-blur-sm bg-background/80 border border-border/50 shadow-md hover:shadow-lg text-sm sm:text-base px-4 sm:px-6 py-2 h-auto sm:h-12">
                   <Link to="/mood" className="flex items-center gap-2">
                     Track Mood
-                    <Heart className="h-4 w-4 ml-1" />
+                    <Heart className="h-3.5 w-3.5 sm:h-4 sm:w-4 ml-1" />
                   </Link>
                 </Button>
               </motion.div>
               
-              {/* Stats/highlights */}
+              {/* Stats/highlights with improved styling */}
               <motion.div 
-                className="grid grid-cols-2 md:grid-cols-3 gap-6 mt-12 w-full max-w-3xl"
+                className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-6 mt-8 sm:mt-12 w-full max-w-3xl mb-8 md:mb-16"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5 }}
               >
-                <div className="flex flex-col items-center p-4 rounded-xl backdrop-blur-sm bg-card/30 border border-border/30">
-                  <h3 className="text-3xl font-bold text-primary">100%</h3>
-                  <p className="text-sm text-muted-foreground">Private & Secure</p>
-                </div>
-                <div className="flex flex-col items-center p-4 rounded-xl backdrop-blur-sm bg-card/30 border border-border/30">
-                  <h3 className="text-3xl font-bold text-primary">Local</h3>
-                  <p className="text-sm text-muted-foreground">Data Storage</p>
-                </div>
-                <div className="hidden md:flex flex-col items-center p-4 rounded-xl backdrop-blur-sm bg-card/30 border border-border/30">
-                  <h3 className="text-3xl font-bold text-primary">Free</h3>
-                  <p className="text-sm text-muted-foreground">Forever</p>
-                </div>
+                <motion.div 
+                  whileHover={{ scale: 1.05 }}
+                  className="flex flex-col items-center p-3 sm:p-4 rounded-xl backdrop-blur-sm bg-card/30 border border-border/30 shadow-sm hover:shadow-md transition-all"
+                >
+                  <h3 className="text-xl sm:text-2xl md:text-3xl font-bold text-primary">100%</h3>
+                  <p className="text-xs sm:text-sm text-muted-foreground">Private & Secure</p>
+                </motion.div>
+                <motion.div 
+                  whileHover={{ scale: 1.05 }}
+                  className="flex flex-col items-center p-3 sm:p-4 rounded-xl backdrop-blur-sm bg-card/30 border border-border/30 shadow-sm hover:shadow-md transition-all"
+                >
+                  <h3 className="text-xl sm:text-2xl md:text-3xl font-bold text-primary">Local</h3>
+                  <p className="text-xs sm:text-sm text-muted-foreground">Data Storage</p>
+                </motion.div>
+                <motion.div 
+                  whileHover={{ scale: 1.05 }}
+                  className="hidden md:flex flex-col items-center p-3 sm:p-4 rounded-xl backdrop-blur-sm bg-card/30 border border-border/30 shadow-sm hover:shadow-md transition-all"
+                >
+                  <h3 className="text-xl sm:text-2xl md:text-3xl font-bold text-primary">Free</h3>
+                  <p className="text-xs sm:text-sm text-muted-foreground">Forever</p>
+                </motion.div>
+              </motion.div>
+              
+              {/* Desktop scroll indicator - only visible on larger screens */}
+              <motion.div 
+                className="hidden md:flex flex-col items-center opacity-70 hover:opacity-100 transition-opacity mt-4"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1, y: [0, 10, 0] }}
+                transition={{ 
+                  delay: 1.2,
+                  y: {
+                    repeat: Infinity,
+                    duration: 2,
+                    ease: "easeInOut"
+                  }
+                }}
+              >
+                <span className="text-xs text-muted-foreground mb-2">Scroll to explore</span>
+                <svg 
+                  xmlns="http://www.w3.org/2000/svg" 
+                  width="20" 
+                  height="20" 
+                  viewBox="0 0 24 24" 
+                  fill="none" 
+                  stroke="currentColor" 
+                  strokeWidth="2" 
+                  strokeLinecap="round" 
+                  strokeLinejoin="round" 
+                  className="text-muted-foreground"
+                >
+                  <path d="M12 5v14M5 12l7 7 7-7"/>
+                </svg>
+              </motion.div>
+              
+              {/* Scroll indicator - positioned at the bottom of the viewport, not the content */}
+              <motion.div 
+                className="fixed bottom-6 left-1/2 transform -translate-x-1/2 flex flex-col items-center opacity-70 hover:opacity-100 transition-opacity z-20 md:hidden"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1, y: [0, 10, 0] }}
+                transition={{ 
+                  delay: 1.2,
+                  y: {
+                    repeat: Infinity,
+                    duration: 2,
+                    ease: "easeInOut"
+                  }
+                }}
+              >
+                <span className="text-xs text-muted-foreground mb-2">Scroll to explore</span>
+                <svg 
+                  xmlns="http://www.w3.org/2000/svg" 
+                  width="20" 
+                  height="20" 
+                  viewBox="0 0 24 24" 
+                  fill="none" 
+                  stroke="currentColor" 
+                  strokeWidth="2" 
+                  strokeLinecap="round" 
+                  strokeLinejoin="round" 
+                  className="text-muted-foreground"
+                >
+                  <path d="M12 5v14M5 12l7 7 7-7"/>
+                </svg>
               </motion.div>
             </div>
           </div>
@@ -124,23 +234,23 @@ const Index = () => {
       <MotionSection delay={0.1}>
         <section className="container px-4 md:px-6 relative">
           {/* Background accent */}
-          <div className="absolute -top-40 -right-40 h-80 w-80 rounded-full bg-primary/5 blur-3xl pointer-events-none"></div>
-          <div className="absolute -bottom-20 -left-40 h-80 w-80 rounded-full bg-accent/5 blur-3xl pointer-events-none"></div>
+          <div className="absolute -top-40 -right-40 h-60 sm:h-80 w-60 sm:w-80 rounded-full bg-primary/5 blur-3xl pointer-events-none"></div>
+          <div className="absolute -bottom-20 -left-40 h-60 sm:h-80 w-60 sm:w-80 rounded-full bg-accent/5 blur-3xl pointer-events-none"></div>
           
-          <div className="mb-10 text-center relative z-10">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent/10 backdrop-blur-sm border border-accent/20 mb-4">
-              <Star className="h-4 w-4 text-accent" />
-              <span className="text-sm font-medium">Designed for you</span>
+          <div className="mb-6 sm:mb-10 text-center relative z-10">
+            <div className="inline-flex items-center gap-1.5 sm:gap-2 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-accent/10 backdrop-blur-sm border border-accent/20 mb-3 sm:mb-4">
+              <Star className="h-3 w-3 sm:h-4 sm:w-4 text-accent" />
+              <span className="text-xs sm:text-sm font-medium">Designed for you</span>
             </div>
-            <h2 className="text-3xl font-bold md:text-5xl mb-4">Core Features</h2>
-            <p className="text-muted-foreground mt-2 text-lg max-w-2xl mx-auto">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-3 sm:mb-4">Core Features</h2>
+            <p className="text-muted-foreground mt-2 text-sm sm:text-base md:text-lg max-w-2xl mx-auto">
               Everything you need for personal reflection and growth, all in one place
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-8 lg:gap-12 relative z-10">
+          <div className="grid md:grid-cols-2 gap-4 sm:gap-6 md:gap-8 lg:gap-12 relative z-10">
             <motion.div 
-              whileHover={{ scale: 1.03 }}
+              whileHover={{ scale: 1.02 }}
               transition={{ type: "spring", stiffness: 400, damping: 10 }}
               className="group"
             >
@@ -148,29 +258,29 @@ const Index = () => {
                 {/* Accent border */}
                 <div className="absolute inset-0 border-t-4 border-primary/50 rounded-t-lg opacity-50 group-hover:opacity-100 transition-opacity"></div>
                 
-                <CardHeader className="pb-4">
-                  <CardTitle className="flex items-center gap-3 text-2xl">
-                    <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
-                      <BookOpen className="h-6 w-6 text-primary" />
+                <CardHeader className="pb-2 sm:pb-4">
+                  <CardTitle className="flex items-center gap-2 sm:gap-3 text-xl sm:text-2xl">
+                    <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-full bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+                      <BookOpen className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
                     </div>
                     Journal
                   </CardTitle>
-                  <CardDescription className="text-base">Write about your day's experiences</CardDescription>
+                  <CardDescription className="text-sm sm:text-base">Write about your day's experiences</CardDescription>
                 </CardHeader>
-                <CardContent className="pb-6">
-                  <p className="text-base">Record your thoughts, experiences, and reflections in a private space that stays on your device. Organize with tags and search through your entries with ease.</p>
+                <CardContent className="pb-4 sm:pb-6">
+                  <p className="text-sm sm:text-base">Record your thoughts, experiences, and reflections in a private space that stays on your device. Organize with tags and search through your entries with ease.</p>
                   
-                  <div className="mt-4 flex flex-wrap gap-2">
+                  <div className="mt-3 sm:mt-4 flex flex-wrap gap-1.5 sm:gap-2">
                     <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-accent-foreground/80">Rich Text Editor</span>
                     <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-accent-foreground/80">Tag Support</span>
                     <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-accent-foreground/80">Search</span>
                   </div>
                 </CardContent>
                 <CardFooter>
-                  <Button asChild size="sm" className="group-hover:bg-primary group-hover:text-primary-foreground transition-all w-full sm:w-auto">
-                    <Link to="/journal/new" className="flex items-center justify-center gap-2">
+                  <Button asChild size="sm" className="group-hover:bg-primary group-hover:text-primary-foreground transition-all w-full sm:w-auto text-xs sm:text-sm h-8 sm:h-9">
+                    <Link to="/journal/new" className="flex items-center justify-center gap-1.5 sm:gap-2">
                       Write New Entry
-                      <ArrowRight className="h-3.5 w-3.5" />
+                      <ArrowRight className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
                     </Link>
                   </Button>
                 </CardFooter>
@@ -178,7 +288,7 @@ const Index = () => {
             </motion.div>
 
             <motion.div
-              whileHover={{ scale: 1.03 }}
+              whileHover={{ scale: 1.02 }}
               transition={{ type: "spring", stiffness: 400, damping: 10 }}
               className="group"
             >
@@ -186,29 +296,29 @@ const Index = () => {
                 {/* Accent border */}
                 <div className="absolute inset-0 border-t-4 border-accent/50 rounded-t-lg opacity-50 group-hover:opacity-100 transition-opacity"></div>
                 
-                <CardHeader className="pb-4">
-                  <CardTitle className="flex items-center gap-3 text-2xl">
-                    <div className="h-12 w-12 rounded-full bg-accent/10 flex items-center justify-center group-hover:bg-accent/20 transition-colors">
-                      <CalendarCheck className="h-6 w-6 text-accent" />
+                <CardHeader className="pb-2 sm:pb-4">
+                  <CardTitle className="flex items-center gap-2 sm:gap-3 text-xl sm:text-2xl">
+                    <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-full bg-accent/10 flex items-center justify-center group-hover:bg-accent/20 transition-colors">
+                      <CalendarCheck className="h-5 w-5 sm:h-6 sm:w-6 text-accent" />
                     </div>
                     Mood Tracker
                   </CardTitle>
-                  <CardDescription className="text-base">Track your emotional journey</CardDescription>
+                  <CardDescription className="text-sm sm:text-base">Track your emotional journey</CardDescription>
                 </CardHeader>
-                <CardContent className="pb-6">
-                  <p className="text-base">Record your daily mood and see patterns over time to better understand your emotional well-being. Add notes to provide context for your feelings.</p>
+                <CardContent className="pb-4 sm:pb-6">
+                  <p className="text-sm sm:text-base">Record your daily mood and see patterns over time to better understand your emotional well-being. Add notes to provide context for your feelings.</p>
                   
-                  <div className="mt-4 flex flex-wrap gap-2">
+                  <div className="mt-3 sm:mt-4 flex flex-wrap gap-1.5 sm:gap-2">
                     <span className="text-xs px-2 py-1 rounded-full bg-accent/10 text-accent-foreground/80">Daily Tracking</span>
                     <span className="text-xs px-2 py-1 rounded-full bg-accent/10 text-accent-foreground/80">Mood Patterns</span>
                     <span className="text-xs px-2 py-1 rounded-full bg-accent/10 text-accent-foreground/80">Insights</span>
                   </div>
                 </CardContent>
                 <CardFooter>
-                  <Button asChild size="sm" className="group-hover:bg-accent group-hover:text-accent-foreground transition-all w-full sm:w-auto">
-                    <Link to="/mood" className="flex items-center justify-center gap-2">
+                  <Button asChild size="sm" className="group-hover:bg-accent group-hover:text-accent-foreground transition-all w-full sm:w-auto text-xs sm:text-sm h-8 sm:h-9">
+                    <Link to="/mood" className="flex items-center justify-center gap-1.5 sm:gap-2">
                       Track Today's Mood
-                      <ArrowRight className="h-3.5 w-3.5" />
+                      <ArrowRight className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
                     </Link>
                   </Button>
                 </CardFooter>
@@ -220,13 +330,13 @@ const Index = () => {
 
       {/* Tools Section */}
       <MotionSection delay={0.2}>
-        <section className="container px-4 md:px-6 py-16 my-8 rounded-3xl bg-gradient-to-br from-accent/20 via-background to-primary/10 relative overflow-hidden">
+        <section className="container px-4 md:px-6 py-10 sm:py-16 my-6 sm:my-8 rounded-2xl sm:rounded-3xl bg-gradient-to-br from-accent/20 via-background to-primary/10 relative overflow-hidden">
           {/* Decorative elements */}
           <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-accent/50 to-transparent"></div>
           <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary/50 to-transparent"></div>
           
           <motion.div 
-            className="absolute -top-20 -right-20 h-40 w-40 rounded-full bg-accent/20 blur-3xl"
+            className="absolute -top-20 -right-20 h-30 sm:h-40 w-30 sm:w-40 rounded-full bg-accent/20 blur-3xl"
             animate={{
               scale: [1, 1.2, 1],
               opacity: [0.3, 0.5, 0.3]
@@ -238,33 +348,33 @@ const Index = () => {
             }}
           />
           
-          <div className="mb-10 text-center relative z-10">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 backdrop-blur-sm border border-primary/20 mb-4">
-              <Lightbulb className="h-4 w-4 text-primary" />
-              <span className="text-sm font-medium">Powerful yet simple</span>
+          <div className="mb-6 sm:mb-10 text-center relative z-10">
+            <div className="inline-flex items-center gap-1.5 sm:gap-2 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-primary/10 backdrop-blur-sm border border-primary/20 mb-3 sm:mb-4">
+              <Lightbulb className="h-3 w-3 sm:h-4 sm:w-4 text-primary" />
+              <span className="text-xs sm:text-sm font-medium">Powerful yet simple</span>
             </div>
-            <h2 className="text-3xl font-bold md:text-5xl mb-4">Thoughtful Tools</h2>
-            <p className="text-muted-foreground mt-2 text-lg max-w-2xl mx-auto">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-3 sm:mb-4">Thoughtful Tools</h2>
+            <p className="text-muted-foreground mt-2 text-sm sm:text-base md:text-lg max-w-2xl mx-auto">
               Simple yet effective tools designed to enhance your self-reflection journey
             </p>
           </div>
 
-          <StaggeredContainer className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
+          <StaggeredContainer className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
             <StaggeredItem>
               <motion.div 
-                className="flex flex-col items-center text-center p-6 rounded-xl backdrop-blur-sm bg-card/80 border border-border/30 shadow-md hover:shadow-xl transition-all h-full"
+                className="flex flex-col items-center text-center p-4 sm:p-6 rounded-xl backdrop-blur-sm bg-card/80 border border-border/30 shadow-md hover:shadow-xl transition-all h-full"
                 whileHover={{ 
-                  scale: 1.05, 
+                  scale: 1.03, 
                   boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)" 
                 }}
                 transition={{ type: "spring", stiffness: 400, damping: 10 }}
               >
                 <motion.div 
-                  className="h-16 w-16 rounded-full bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center mb-5"
+                  className="h-12 w-12 sm:h-16 sm:w-16 rounded-full bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center mb-3 sm:mb-5"
                   whileHover={{ scale: 1.1 }}
                   transition={{ type: "spring", stiffness: 400, damping: 10 }}
                 >
-                  <Pencil className="h-7 w-7 text-primary" />
+                  <Pencil className="h-5 w-5 sm:h-7 sm:w-7 text-primary" />
                 </motion.div>
                 <h3 className="font-medium mb-3 text-xl">Daily Writing</h3>
                 <p className="text-muted-foreground">Capture your thoughts and feelings with our distraction-free writing interface.</p>
