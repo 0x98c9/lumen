@@ -26,7 +26,7 @@ Lumen is built with privacy at its core. Everything you write stays private—on
 1. **Clone the repository:**
    ```sh
    git clone https://github.com/0x98c9/lumen.git
-   cd shadow-self-journal
+   cd lumen
    ```
 2. **Install dependencies:**
    ```sh
